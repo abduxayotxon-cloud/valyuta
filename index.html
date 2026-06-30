@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dollar → So'm | Valyuta konvertori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #23ac8cb8;
+    --surface: #16302A;
+    --surface-2: #1D3B33;
+    --gold: #D4AF37;
+    --gold-soft: #C9A22799;
+    --sage: #6E9C8B;
+    --text: #F2EFE6;
+    --text-dim: #AFC4BB;
+    --hairline: #2A4A40;
+    --rule: 1px solid var(--hairline);
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(212,175,55,0.06), transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(110,156,139,0.08), transparent 45%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 20px 80px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    width: 100%;
+    max-width: 760px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 56px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .brand-mark{
+    width:34px; height:34px;
+    border:1.5px solid var(--gold);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Fraunces', serif;
+    font-size:16px;
+    color: var(--gold);
+  }
+
+  .brand-name{
+    font-family:'Fraunces', serif;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-name span{ color: var(--gold); }
+
+  .rate-ticker{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align:right;
+    line-height: 1.5;
+  }
+
+  .rate-ticker .live-dot{
+    display:inline-block;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:#5FD89A;
+    margin-right:6px;
+    box-shadow: 0 0 0 0 rgba(95,216,154,0.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(95,216,154,0.5); }
+    70%{ box-shadow: 0 0 0 6px rgba(95,216,154,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(95,216,154,0); }
+  }
+
+  /* ---------- HERO ---------- */
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 46px);
+    text-align:center;
+    max-width: 620px;
+    line-height: 1.15;
+    margin-bottom: 48px;
+  }
+
+  h1 em{
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  /* ---------- THE NOTE (signature element) ---------- */
+  .note{
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 18px;
+    padding: 0;
+    overflow: visible;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+  }
+
+  .note::before, .note::after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 26px;
+    background: var(--bg);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--hairline);
+  }
+  .note::before{ left: -13px; }
+  .note::after{ right: -13px; }
+
+  .note-row{
+    display:flex;
+    align-items:stretch;
+  }
+
+  .field{
+    flex:1;
+    padding: 32px 30px;
+  }
+
+  .field-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .flag{
+    width:18px; height:13px;
+    border-radius:2px;
+    display:inline-block;
+    overflow:hidden;
+    position:relative;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .flag.usd{ background: linear-gradient(180deg,#3C3B6E 0 40%, #fff 40% 55%, #B22234 55% 70%, #fff 70% 85%, #B22234 85% 100%); }
+  .flag.uzs{
+    background: linear-gradient(180deg,
+      #1EB53A 0% 28%,
+      #FFFFFF 28% 36%,
+      #0099B5 36% 64%,
+      #FFFFFF 64% 72%,
+      #CE1126 72% 100%);
+  }
+  .flag.uzs::before{
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle at 3px 3px, #fff 2px, transparent 2.2px),
+                radial-gradient(circle at 4.3px 3px, #0099B5 2px, transparent 2.2px);
+  }
+  .flag.uzs::after{
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 10px;
+    width: 1.5px;
+    height: 1.5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+      3px 0 0 0 #fff,
+      6px 0 0 0 #fff,
+      1.5px 2px 0 0 #fff,
+      4.5px 2px 0 0 #fff,
+      7.5px 2px 0 0 #fff;
+  }
+
+  .amount-input{
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .amount-input::placeholder{ color: var(--text-dim); opacity: 0.4; }
+
+  .amount-output{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--gold);
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+
+  .divider-v{
+    width: 1px;
+    background: var(--hairline);
+    margin: 18px 0;
+  }
+
+  .swap-btn{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 4px solid var(--bg);
+    color: var(--bg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor: pointer;
+    transition: transform 0.25s ease, background 0.25s ease;
+    z-index: 2;
+  }
+
+  .swap-btn:hover{ background: #E8C75C; transform: translate(-50%, -50%) rotate(180deg); }
+  .swap-btn:focus-visible{ outline: 2px solid var(--text); outline-offset: 3px; }
+  .swap-btn svg{ width: 18px; height:18px; }
+
+  .note-footer{
+    border-top: var(--rule);
+    padding: 16px 30px;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .note-footer .rate-value{ color: var(--text); }
+
+  .perforation{
+    position:absolute;
+    top:0; bottom:0;
+    left: 50%;
+    width: 0;
+    border-left: 1.5px dashed var(--hairline);
+  }
+
+  /* ---------- QUICK AMOUNTS ---------- */
+  .quick-amounts{
+    display:flex;
+    gap: 10px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+
+  .chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: var(--rule);
+    background: var(--surface);
+    color: var(--text-dim);
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+
+  .chip:hover{ border-color: var(--gold); color: var(--gold); }
+  .chip:focus-visible{ outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* ---------- HISTORY STRIP ---------- */
+  .context{
+    margin-top: 64px;
+    width: 100%;
+    max-width: 620px;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--hairline);
+    border: var(--rule);
+    border-radius: 14px;
+    overflow:hidden;
+  }
+
+  .context-cell{
+    background: var(--surface);
+    padding: 20px;
+    text-align:center;
+  }
+
+  .context-cell .num{
+    font-family:'Fraunces', serif;
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .context-cell .lbl{
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  footer{
+    margin-top: 56px;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align:center;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  footer a{ color: var(--sage); text-decoration:none; }
+
+  @media (max-width: 560px){
+    .note-row{ flex-direction: column; }
+    .divider-v{ display:none; }
+    .note::before, .note::after{ display:none; }
+    .perforation{ top:50%; bottom:auto; left:0; right:0; width:auto; height:0; border-left:none; border-top: 1.5px dashed var(--hairline); }
+    .swap-btn{ top:50%; }
+    header{ flex-direction:column; gap:14px; align-items:flex-start; }
+    .rate-ticker{ text-align:left; }
+    .context{ grid-template-columns: 1fr; }
+  }@media (prefers-reduced-motion: reduce){
+    .rate-ticker .live-dot{ animation:none; }
+    .swap-btn{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">$</div>
+    <div class="brand-name">Ayirboshlash<span>.</span></div>
+  </div>
+  <div class="rate-ticker" id="rateTicker">
+    <span class="live-dot"></span>Kurs yuklanmoqda…
+  </div>
+</header>
+
+<div class="eyebrow">Real vaqt rejimida</div>
+<h1>Dollaringizni bir zumda <em>so'mga</em> aylantiring</h1>
+
+<div class="note">
+  <div class="perforation"></div>
+  <div class="note-row">
+    <div class="field">
+      <div class="field-label"><span class="flag usd"></span>AQSH dollari</div>
+      <input type="text" inputmode="decimal" class="amount-input" id="usdInput" value="100" placeholder="0">
+    </div>
+    <div class="divider-v"></div>
+    <div class="field">
+      <div class="field-label"><span class="flag uzs"></span>O'zbek so'mi</div>
+      <div class="amount-output" id="uzsOutput">—</div>
+    </div>
+  </div>
+  <button class="swap-btn" id="swapBtn" aria-label="Yo'nalishni almashtirish" title="Yo'nalishni almashtirish">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5-5 5 5M7 14l5 5 5-5"/></svg>
+  </button>
+  <div class="note-footer">
+    <span>1 USD = <span class="rate-value" id="rateValue">—</span> UZS</span>
+    <span id="updatedAt">yangilanmoqda…</span>
+  </div>
+</div>
+
+<div class="quick-amounts">
+  <button class="chip" data-amount="10">$10</button>
+  <button class="chip" data-amount="50">$50</button>
+  <button class="chip" data-amount="100">$100</button>
+  <button class="chip" data-amount="500">$500</button>
+  <button class="chip" data-amount="1000">$1,000</button>
+</div>
+
+<div class="context">
+  <div class="context-cell">
+    <div class="num" id="ctx10">—</div>
+    <div class="lbl">$10 uchun</div>
+  </div>
+  <div class="context-cell">
+    <div class="num" id="ctx100">—</div>
+    <div class="lbl">$100 uchun</div>
+  </div>
+  <div class="context-cell">
+    <div class="num" id="ctx1000">—</div>
+    <div class="lbl">$1,000 uchun</div>
+  </div>
+</div>
+
+<footer>
+  Kurslar ochiq manbadan (Open Exchange Rates API) avtomatik olinadi. Internet bo'lmasa, taxminiy kurs ko'rsatiladi. Rasmiy operatsiyalar uchun bankingiz kursini tekshiring.
+</footer>
+
+<script>
+(function(){
+  const usdInput = document.getElementById('usdInput');
+  const uzsOutput = document.getElementById('uzsOutput');
+  const rateValue = document.getElementById('rateValue');
+  const rateTicker = document.getElementById('rateTicker');
+  const updatedAt = document.getElementById('updatedAt');
+  const swapBtn = document.getElementById('swapBtn');
+  const ctx10 = document.getElementById('ctx10');
+  const ctx100 = document.getElementById('ctx100');
+  const ctx1000 = document.getElementById('ctx1000');
+
+  const FALLBACK_RATE = 12750; // taxminiy zaxira kurs
+  let rate = FALLBACK_RATE;
+  let direction = 'usd-to-uzs'; // yoki 'uzs-to-usd'
+
+  function fmt(n, maxDigits){
+    return new Intl.NumberFormat('en-US', { maximumFractionDigits: maxDigits ?? 2 }).format(n);
+  }
+
+  function render(){
+    const raw = parseFloat((usdInput.value || '0').replace(/,/g, ''));
+    const amount = isNaN(raw) ? 0 : raw;
+
+    if(direction === 'usd-to-uzs'){
+      uzsOutput.textContent = fmt(amount * rate, 0);
+    } else {
+      uzsOutput.textContent = fmt(amount / rate, 2);
+    }
+
+    ctx10.textContent = fmt(10 * rate, 0);
+    ctx100.textContent = fmt(100 * rate, 0);
+    ctx1000.textContent = fmt(1000 * rate, 0);
+    rateValue.textContent = fmt(rate, 2);
+  }
+
+  function setLabels(){
+    const labels = document.querySelectorAll('.field-label');
+    if(direction === 'usd-to-uzs'){
+      labels[0].innerHTML = '<span class="flag usd"></span>AQSH dollari';
+      labels[1].innerHTML = '<span class="flag uzs"></span>O\'zbek so\'mi';
+    } else {
+      labels[0].innerHTML = '<span class="flag uzs"></span>O\'zbek so\'mi';
+      labels[1].innerHTML = '<span class="flag usd"></span>AQSH dollari';
+    }
+  }usdInput.addEventListener('input', render);
+
+  swapBtn.addEventListener('click', function(){
+    direction = direction === 'usd-to-uzs' ? 'uzs-to-usd' : 'usd-to-uzs';
+    setLabels();
+    // joriy chiqish qiymatini kirishga ko'chirish
+    const currentOutput = uzsOutput.textContent.replace(/,/g, '');
+    usdInput.value = currentOutput === '—' ? '' : currentOutput;
+    render();
+  });
+
+  document.querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      if(direction !== 'usd-to-uzs'){
+        direction = 'usd-to-uzs';
+        setLabels();
+      }
+      usdInput.value = chip.getAttribute('data-amount');
+      render();
+    });
+  });
+
+  async function loadRate(){
+    try{
+      const res = await fetch('https://open.er-api.com/v6/latest/USD');
+      const data = await res.json();
+      if(data && data.rates && data.rates.UZS){
+        rate = data.rates.UZS;
+        rateTicker.innerHTML = '<span class="live-dot"></span>Joriy kurs: 1$ = ' + fmt(rate, 0) + ' so\'m';
+        updatedAt.textContent = 'yangilandi: ' + new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+      } else {
+        throw new Error('no rate');
+      }
+    } catch(e){
+      rateTicker.innerHTML = '<span class="live-dot" style="background:#D4AF37"></span>Taxminiy kurs ishlatilmoqda';
+      updatedAt.textContent = 'tarmoqqa ulanilmadi';
+    }
+    render();
+  }
+
+  setLabels();
+  render();
+  loadRate();
+})();
+</script>
+
+</body>
+</html>
